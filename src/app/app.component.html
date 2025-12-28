@@ -1,20 +1,17 @@
 <main>
     <!-- Notification Toast Container -->
     <div class="notification-container">
-        <div *ngFor="let notif of notifications" 
-             class="notification" 
-             [class.success]="notif.type === 'success'"
-             [class.info]="notif.type === 'info'"
-             [class.warning]="notif.type === 'warning'"
-             [class.error]="notif.type === 'error'"
-             (click)="removeNotification(notif.id)">
+        <div *ngFor="let notif of notifications" class="notification" [class.success]="notif.type === 'success'"
+            [class.info]="notif.type === 'info'" [class.warning]="notif.type === 'warning'"
+            [class.error]="notif.type === 'error'" (click)="removeNotification(notif.id)">
             <span class="notif-icon">
-                <ng-container *ngIf="notif.type === 'success'">✓</ng-container>
-                <ng-container *ngIf="notif.type === 'info'">ℹ</ng-container>
-                <ng-container *ngIf="notif.type === 'warning'">⚠</ng-container>
-                <ng-container *ngIf="notif.type === 'error'">✕</ng-container>
+                <i *ngIf="notif.type === 'success'" class="fas fa-check-circle"></i>
+                <i *ngIf="notif.type === 'info'" class="fas fa-info-circle"></i>
+                <i *ngIf="notif.type === 'warning'" class="fas fa-exclamation-triangle"></i>
+                <i *ngIf="notif.type === 'error'" class="fas fa-times-circle"></i>
             </span>
             <span class="notif-message">{{ notif.message }}</span>
+            <i class="fas fa-times notif-close"></i>
         </div>
     </div>
 
@@ -22,20 +19,18 @@
     <div class="victory-overlay" *ngIf="showVictoryOverlay" (click)="showVictoryOverlay = false">
         <!-- Confetti -->
         <div class="confetti-container">
-            <div *ngFor="let piece of confettiPieces" 
-                 class="confetti-piece"
-                 [style.left.%]="piece.left"
-                 [style.animation-delay.s]="piece.delay"
-                 [style.animation-duration.s]="piece.duration"
-                 [style.background-color]="piece.color"
-                 [style.width.px]="piece.size"
-                 [style.height.px]="piece.size * 0.4">
+            <div *ngFor="let piece of confettiPieces" class="confetti-piece" [style.left.%]="piece.left"
+                [style.animation-delay.s]="piece.delay" [style.animation-duration.s]="piece.duration"
+                [style.background-color]="piece.color" [style.width.px]="piece.size"
+                [style.height.px]="piece.size * 0.4">
             </div>
         </div>
-        
+
         <!-- Victory Card -->
         <div class="victory-card" (click)="$event.stopPropagation()">
-            <div class="trophy-icon">🏆</div>
+            <div class="trophy-icon">
+                <i class="fas fa-trophy"></i>
+            </div>
             <h2 class="victory-title" [class.red]="winner === 'red'" [class.yellow]="winner === 'yellow'">
                 {{ winner === myColor ? 'YOU WIN!' : 'YOU LOSE!' }}
             </h2>
@@ -44,34 +39,37 @@
                 {{ winner?.toUpperCase() }} PLAYER WON!
             </p>
             <div class="victory-message" *ngIf="winner === myColor">
-                🎉 Congratulations on your victory! You connected 4 in a row!
+                <i class="fas fa-star"></i> Congratulations on your victory! You connected 4 in a row!
             </div>
             <div class="victory-message" *ngIf="winner !== myColor">
-                😔 Better luck next time! Challenge them to a rematch!
+                <i class="fas fa-heart-broken"></i> Better luck next time! Challenge them to a rematch!
             </div>
             <button class="btn-play-again" (click)="restart(); showVictoryOverlay = false">
-                <span class="btn-icon">🔄</span> Play Again
+                <i class="fas fa-redo"></i> Play Again
             </button>
             <button class="btn-close-overlay" (click)="showVictoryOverlay = false">
-                Continue Viewing Board
+                <i class="fas fa-eye"></i> Continue Viewing Board
             </button>
         </div>
     </div>
 
     <header>
-        <h1>Connect 4</h1>
-        <div class="subtitle">Realtime P2P Strategy Game</div>
+        <h1><i class="fas fa-circle red-icon"></i> Connect 4 <i class="fas fa-circle yellow-icon"></i></h1>
+        <div class="subtitle"><i class="fas fa-wifi"></i> Realtime P2P Strategy Game</div>
     </header>
 
     <!-- Controls & Status -->
     <div class="controls-card">
         <div class="status-bar" [class.connected]="isConnected" [class.connecting]="isConnecting">
             <div class="connection-indicator">
-                <div class="dot" [class.green]="isConnected" [class.orange]="isConnecting" [class.gray]="!isConnected && !isConnecting"></div>
+                <i class="fas fa-circle dot" [class.green]="isConnected" [class.orange]="isConnecting"
+                    [class.gray]="!isConnected && !isConnecting"></i>
                 <span class="connection-text">
-                    <ng-container *ngIf="isConnected">Connected</ng-container>
-                    <ng-container *ngIf="isConnecting">Connecting...</ng-container>
-                    <ng-container *ngIf="!isConnected && !isConnecting">Not Connected</ng-container>
+                    <ng-container *ngIf="isConnected"><i class="fas fa-link"></i> Connected</ng-container>
+                    <ng-container *ngIf="isConnecting"><i class="fas fa-spinner fa-spin"></i>
+                        Connecting...</ng-container>
+                    <ng-container *ngIf="!isConnected && !isConnecting"><i class="fas fa-unlink"></i> Not
+                        Connected</ng-container>
                 </span>
             </div>
             <span class="status-message">{{ status || 'Start a game to begin' }}</span>
@@ -80,10 +78,12 @@
         <!-- Game Setup -->
         <div *ngIf="!isConnected && !isConnecting" class="game-setup">
             <div class="room-id-display" *ngIf="peerId">
-                <span class="room-label">Your Room ID:</span>
+                <span class="room-label"><i class="fas fa-key"></i> Your Room ID:</span>
                 <div class="room-id-box">
                     <span class="room-id">{{ peerId }}</span>
-                    <button class="btn-copy" (click)="copyRoomId()" title="Copy to Clipboard">📋</button>
+                    <button class="btn-copy" (click)="copyRoomId()" title="Copy to Clipboard">
+                        <i class="fas fa-copy"></i>
+                    </button>
                 </div>
             </div>
 
@@ -93,60 +93,62 @@
 
             <div class="setup-options">
                 <div class="option-card create-option" (click)="createRoom()">
-                    <div class="option-icon">🎮</div>
+                    <div class="option-icon"><i class="fas fa-plus-circle"></i></div>
                     <div class="option-title">Create Room</div>
                     <div class="option-desc">Start a new game and invite a friend</div>
                 </div>
 
                 <div class="option-card join-option">
-                    <div class="option-icon">🔗</div>
+                    <div class="option-icon"><i class="fas fa-sign-in-alt"></i></div>
                     <div class="option-title">Join Room</div>
                     <div class="option-desc">Enter your friend's Room ID</div>
                     <div class="join-form">
-                        <input #roomInput 
-                               placeholder="Enter 4-digit ID" 
-                               maxlength="4"
-                               class="room-input"
-                               (keyup.enter)="joinRoom(roomInput.value)">
+                        <input #roomInput placeholder="Enter 4-digit ID" maxlength="4" class="room-input"
+                            (keyup.enter)="joinRoom(roomInput.value)">
                         <button class="btn-join" (click)="joinRoom(roomInput.value)">
-                            Join →
+                            <i class="fas fa-arrow-right"></i> Join
                         </button>
                     </div>
                 </div>
             </div>
 
             <div class="error-message" *ngIf="connectionError">
-                ⚠️ {{ connectionError }}
+                <i class="fas fa-exclamation-circle"></i> {{ connectionError }}
             </div>
         </div>
 
         <!-- Connected State -->
         <div *ngIf="isConnected" class="connected-info">
             <div class="player-badge" [class.red]="myColor === 'red'" [class.yellow]="myColor === 'yellow'">
-                <span class="badge-dot"></span>
-                <span>You are {{ myColor === 'red' ? 'RED 🔴' : 'YELLOW 🟡' }}</span>
+                <i class="fas fa-circle badge-dot"></i>
+                <span>You are {{ myColor === 'red' ? 'RED' : 'YELLOW' }}</span>
             </div>
             <div class="turn-indicator">
                 <span *ngIf="!gameOver">
-                    {{ turn === myColor ? "🎯 Your turn!" : "⏳ Opponent's turn" }}
+                    <i class="fas" [class.fa-bullseye]="turn === myColor"
+                        [class.fa-hourglass-half]="turn !== myColor"></i>
+                    {{ turn === myColor ? "Your turn!" : "Opponent's turn" }}
                 </span>
             </div>
         </div>
 
         <!-- Connecting State -->
         <div *ngIf="isConnecting" class="connecting-state">
-            <div class="spinner"></div>
+            <i class="fas fa-spinner fa-spin"></i>
             <span>Connecting to room...</span>
         </div>
 
         <!-- Game Over Actions -->
         <div *ngIf="gameOver && isConnected" class="game-over-actions">
             <div class="game-result" [class.winner]="winner === myColor" [class.loser]="winner !== myColor">
-                <span *ngIf="winner">{{ winner === myColor ? '🎉 Victory!' : '😢 Defeat!' }}</span>
-                <span *ngIf="!winner">🤝 Draw!</span>
+                <span *ngIf="winner">
+                    <i class="fas" [class.fa-crown]="winner === myColor" [class.fa-sad-tear]="winner !== myColor"></i>
+                    {{ winner === myColor ? 'Victory!' : 'Defeat!' }}
+                </span>
+                <span *ngIf="!winner"><i class="fas fa-handshake"></i> Draw!</span>
             </div>
             <button class="btn-restart" (click)="restart()">
-                <span class="btn-icon">🔄</span> Play Again
+                <i class="fas fa-redo"></i> Play Again
             </button>
         </div>
     </div>
@@ -155,23 +157,18 @@
     <div class="game-container" [class.disabled]="!isConnected || gameOver">
         <div class="board">
             <div class="column-indicators">
-                <div *ngFor="let col of [0,1,2,3,4,5,6]" 
-                     class="column-indicator"
-                     [class.active]="turn === myColor && isConnected && !gameOver"
-                     [class.red]="myColor === 'red'"
-                     [class.yellow]="myColor === 'yellow'">
-                    ▼
+                <div *ngFor="let col of [0,1,2,3,4,5,6]" class="column-indicator"
+                    [class.active]="turn === myColor && isConnected && !gameOver" [class.red]="myColor === 'red'"
+                    [class.yellow]="myColor === 'yellow'">
+                    <i class="fas fa-caret-down"></i>
                 </div>
             </div>
             <div class="board-grid">
                 <div class="row" *ngFor="let row of board; let r = index">
-                    <div class="cell" 
-                         *ngFor="let cell of row; let c = index" 
-                         [class.red]="cell === 'red'"
-                         [class.yellow]="cell === 'yellow'" 
-                         [class.clickable]="turn === myColor && !gameOver && isConnected && !board[0][c]"
-                         (click)="play(c)" 
-                         [title]="'Column ' + (c + 1)">
+                    <div class="cell" *ngFor="let cell of row; let c = index" [class.red]="cell === 'red'"
+                        [class.yellow]="cell === 'yellow'"
+                        [class.clickable]="turn === myColor && !gameOver && isConnected && !board[0][c]"
+                        (click)="play(c)" [title]="'Column ' + (c + 1)">
                         <div class="cell-shine" *ngIf="cell"></div>
                     </div>
                 </div>
@@ -181,11 +178,24 @@
 
     <!-- Instructions -->
     <div class="instructions">
-        <h3>🎮 How to Play</h3>
+        <h3><i class="fas fa-gamepad"></i> How to Play</h3>
         <ol>
-            <li><strong>Create</strong> a room and share the 4-digit ID, or <strong>Join</strong> using a friend's ID.</li>
-            <li><strong>Red 🔴</strong> goes first. Players take turns dropping discs into columns.</li>
-            <li>The first player to connect <strong>4 discs</strong> in a row wins! (Horizontal, vertical, or diagonal)</li>
+            <li><i class="fas fa-door-open"></i> <strong>Create</strong> a room and share the 4-digit ID, or
+                <strong>Join</strong> using a friend's ID.
+            </li>
+            <li><i class="fas fa-circle red-icon-small"></i> <strong>Red</strong> goes first. Players take turns
+                dropping discs into columns.</li>
+            <li><i class="fas fa-trophy"></i> The first player to connect <strong>4 discs</strong> in a row wins!
+                (Horizontal, vertical, or diagonal)</li>
         </ol>
     </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <a href="https://xdastechnology.com" target="_blank" rel="noopener noreferrer">
+            <i class="fas fa-code"></i> xdastechnology.com
+        </a>
+        <span class="separator">•</span>
+        <span class="fun-text"><i class="fas fa-heart"></i> Developed for fun</span>
+    </footer>
 </main>

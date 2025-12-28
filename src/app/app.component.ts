@@ -31,16 +31,16 @@ export class AppComponent implements OnDestroy {
     status = '';
     gameOver = false;
     winner: 'red' | 'yellow' | null = null;
-    
+
     // Connection states
     isConnecting = false;
     isConnected = false;
     connectionError = '';
-    
+
     // Notifications
     notifications: Notification[] = [];
     private notificationId = 0;
-    
+
     // Confetti
     confettiPieces: { left: number; delay: number; duration: number; color: string; size: number }[] = [];
     showVictoryOverlay = false;
@@ -74,9 +74,9 @@ export class AppComponent implements OnDestroy {
                 this.isConnected = true;
                 this.isConnecting = false;
                 this.setupConnectionHandlers(connection);
-                this.status = 'Player joined. You are Red 🔴';
-                this.showNotification('🎮 A player has joined! Game is ready!', 'success');
-                
+                this.status = 'Player joined. You are Red';
+                this.showNotification('A player has joined! Game is ready!', 'success');
+
                 // Send welcome message to joiner
                 setTimeout(() => {
                     this.conn?.send({ type: 'welcome', message: 'Connected to host!' });
@@ -115,7 +115,7 @@ export class AppComponent implements OnDestroy {
             this.ngZone.run(() => {
                 this.isConnected = false;
                 this.conn = null;
-                this.showNotification('⚠️ Opponent disconnected!', 'warning');
+                this.showNotification('Opponent disconnected!', 'warning');
                 this.status = 'Opponent left the game';
             });
         });
@@ -138,7 +138,7 @@ export class AppComponent implements OnDestroy {
         this.showVictoryOverlay = false;
         this.confettiPieces = [];
         if (this.conn && this.isConnected) {
-            this.status = this.myColor === 'red' ? 'Connected. You are Red 🔴' : 'Connected. You are Yellow 🟡';
+            this.status = this.myColor === 'red' ? 'Connected. You are Red' : 'Connected. You are Yellow';
         }
     }
 
@@ -157,7 +157,7 @@ export class AppComponent implements OnDestroy {
         this.isConnecting = true;
         this.connectionError = '';
         this.status = 'Connecting...';
-        
+
         this.conn = this.peer.connect(roomId, {
             reliable: true
         });
@@ -181,8 +181,8 @@ export class AppComponent implements OnDestroy {
                 this.isConnecting = false;
                 this.setupConnectionHandlers(this.conn!);
                 this.listen();
-                this.status = 'Connected! You are Yellow 🟡';
-                this.showNotification('🎮 Connected! You are Yellow. Red goes first!', 'success');
+                this.status = 'Connected! You are Yellow';
+                this.showNotification('Connected! You are Yellow. Red goes first!', 'success');
             });
         });
 
@@ -199,7 +199,7 @@ export class AppComponent implements OnDestroy {
 
     listen() {
         if (!this.conn) return;
-        
+
         this.conn.on('data', (data: any) => {
             console.log('Received data:', data);
             this.ngZone.run(() => {
@@ -207,9 +207,9 @@ export class AppComponent implements OnDestroy {
                     this.dropDisc(data.col, data.color);
                 } else if (data.type === 'restart') {
                     this.resetBoard();
-                    this.showNotification('🔄 Opponent wants to play again!', 'info');
+                    this.showNotification('Opponent wants to play again!', 'info');
                 } else if (data.type === 'welcome') {
-                    this.showNotification('✅ Connected to opponent!', 'success');
+                    this.showNotification('Connected to opponent!', 'success');
                 }
                 this.cdr.detectChanges();
             });
@@ -239,11 +239,11 @@ export class AppComponent implements OnDestroy {
                 if (this.checkWinner(r, col, color)) {
                     this.gameOver = true;
                     this.winner = color;
-                    this.status = `${color.toUpperCase()} WINS! 🏆`;
+                    this.status = `${color.toUpperCase()} WINS!`;
                     this.triggerVictory(color);
                 } else if (this.checkDraw()) {
                     this.gameOver = true;
-                    this.status = "It's a DRAW! 🤝";
+                    this.status = "It's a DRAW!";
                     this.showNotification("Game ended in a draw!", 'info');
                 } else {
                     this.turn = color === 'red' ? 'yellow' : 'red';
@@ -261,19 +261,19 @@ export class AppComponent implements OnDestroy {
     triggerVictory(color: 'red' | 'yellow') {
         this.showVictoryOverlay = true;
         this.generateConfetti();
-        
+
         const isWinner = color === this.myColor;
         if (isWinner) {
-            this.showNotification('🎉 Congratulations! You WON!', 'success');
+            this.showNotification('Congratulations! You WON!', 'success');
         } else {
-            this.showNotification('😔 You lost! Better luck next time!', 'info');
+            this.showNotification('You lost! Better luck next time!', 'info');
         }
     }
 
     generateConfetti() {
         const colors = ['#ef4444', '#eab308', '#22c55e', '#3b82f6', '#8b5cf6', '#ec4899', '#f97316'];
         this.confettiPieces = [];
-        
+
         for (let i = 0; i < 100; i++) {
             this.confettiPieces.push({
                 left: Math.random() * 100,
@@ -288,7 +288,7 @@ export class AppComponent implements OnDestroy {
     restart() {
         this.resetBoard();
         this.conn?.send({ type: 'restart' });
-        this.showNotification('🔄 New game started!', 'info');
+        this.showNotification('New game started!', 'info');
     }
 
     checkWinner(r: number, c: number, color: string): boolean {
@@ -328,7 +328,7 @@ export class AppComponent implements OnDestroy {
             type
         };
         this.notifications.push(notification);
-        
+
         setTimeout(() => {
             this.removeNotification(notification.id);
         }, 4000);
