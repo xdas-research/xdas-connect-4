@@ -1,0 +1,50 @@
+<main>
+    <header>
+        <h1>Connect 4</h1>
+        <div class="subtitle">Realtime P2P Strategy Game</div>
+    </header>
+
+    <!-- Controls & Status -->
+    <div class="controls-card">
+        <div class="status-bar">
+            <div class="dot" [class.green]="!!conn" [class.gray]="!conn"></div>
+            <span>{{ status || 'Start a game to begin' }}</span>
+        </div>
+
+        <div *ngIf="!conn" class="game-setup">
+            <div class="input-group">
+                <button class="btn-primary" (click)="createRoom()">Create New Room</button>
+            </div>
+            <div style="text-align: center; margin: 0.5rem 0; color: #94a3b8; font-size: 0.9rem;">OR</div>
+            <div class="input-group">
+                <input #roomInput placeholder="Enter 4-digit Room ID" maxlength="4">
+                <button class="btn-secondary" (click)="joinRoom(roomInput.value)">Join Room</button>
+            </div>
+        </div>
+
+        <div *ngIf="gameOver">
+            <button class="btn-restart" (click)="restart()">Play Again ↻</button>
+        </div>
+    </div>
+
+    <!-- Game Board -->
+    <div class="game-container">
+        <div class="board">
+            <div class="row" *ngFor="let row of board; let r = index">
+                <div class="cell" *ngFor="let cell of row; let c = index" [class.red]="cell === 'red'"
+                    [class.yellow]="cell === 'yellow'" (click)="play(c)" [title]="'Column ' + (c + 1)">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Instructions -->
+    <div class="instructions">
+        <h3>How to Play</h3>
+        <ol>
+            <li><strong>Create</strong> a room and share the ID, or <strong>Join</strong> a friend's room.</li>
+            <li><strong>Red</strong> goes first. Players take turns dropping discs into columns.</li>
+            <li>The first player to connect <strong>4 discs</strong> horizontally, vertically, or diagonally wins!</li>
+        </ol>
+    </div>
+</main>
